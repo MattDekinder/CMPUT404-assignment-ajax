@@ -144,12 +144,13 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
-    drawNextFrame(); //(but should we?)--no, this might only update the local frame and make it lose sync with the server
-    sendJSONXMLHTTPRequest(server_url+'/entity/'+entity, data, function(x){
-        console.log(x); //this should just be a '200 OK' response
-    });
+    //drawNextFrame(); //(but should we?)--no, this might only update the local frame and make it lose sync with the server
 
-    //XXX: Send a XHTML Request that updates the entity you just  modified!
+    sendJSONXMLHTTPRequest(server_url+'/entity/'+entity, data, function(x){
+        //console.log(x); //this should just be a '200 OK' response
+        //TODO: check the response
+    });
+    //Check XXX: Send a XHTML Request that updates the entity you just  modified!
 
 }
 
@@ -274,6 +275,14 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    sendJSONXMLHTTPRequest(server_url+'/world', null, function(x){
+        //console.log(x); //this is the world returned
+        if (world != x){
+            world = x;
+            drawNextFrame();   
+        }
+        
+    });
     drawFrame();
 }
 
