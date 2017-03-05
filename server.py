@@ -86,7 +86,7 @@ def update(entity):
     myWorld.set(entity, flask_post_json()) #TODO: get the data for this method
 
     #http://stackoverflow.com/questions/26079754/flask-how-to-return-a-success-status-code-for-ajax-call
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    return jsonify(myWorld.get(entity));
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
@@ -102,7 +102,7 @@ def get_entity(entity):
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    return jsonify(myWorld.world())
 
 if __name__ == "__main__":
     app.run()
