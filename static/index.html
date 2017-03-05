@@ -78,10 +78,32 @@ function drawCircle(context,entity) {
         stroke();                                
     }
 }
+/* This doesn't work for some reason... but I don't want to give up on it until I get something working
+red = 0xFF; //255 colours/15 = 17 possible gradients
+green = 0xa0;
+blue= 0x00;
+ if (!entity["colour"]) {
+        red = (red +15)%255
+        green = (green +15)%255
+        blue = (blue +15)%255
+        var colour = ((red<<16)+(green<<8)+blue).toString(16)
+        while (colour.length < 6){
+            colour = "0"+colour;
+        }
+        if (colour.length>6){
+            console.log("Something has gone horribly wrong with the colours");
+        }
+        entity["colour"] = colour; //#FF0000 = red, #0000FF = blue
+       // console.log(((red<<16)+(green<<8)+blue).toString(16));
 
+    } */
+colours = ['red','orange','yellow','lightgreen','green','purple','violet'];
+colour_counter=0;
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = colours[(colour_counter++)%7]; //#FF0000 = red, #0000FF = blue
+       // console.log(((red<<16)+(green<<8)+blue).toString(16));
+
     }
     if (!entity["radius"]) {
         entity["radius"] = 50;
@@ -123,6 +145,7 @@ function drawFrame() {
     }
 }
 
+
 // This is unpleasent, canvas clicks are not handled well
 // So use this code, it works well on multitouch devices as well.
 
@@ -148,8 +171,7 @@ function addEntity(entity, data) {
     //drawNextFrame(); //(but should we?)--no, this might only update the local frame and make it lose sync with the server
 
     sendJSONXMLHTTPRequest(server_url+'/entity/'+entity, data, function(x){
-        //console.log(x); //this should just be a '200 OK' response
-        //TODO: check the response
+        //TODO: check the response (Should be '200 OK')
     });
     //Check XXX: Send a XHTML Request that updates the entity you just  modified!
 
@@ -269,13 +291,13 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,
                           'radius':10});
 });
 
 
 function update() {
-    //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    //Check XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     sendJSONXMLHTTPRequest(server_url+'/world', null, function(x){
         //console.log(x); //this is the world returned
         if (world != x){
