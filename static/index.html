@@ -30,16 +30,20 @@ var host = window.location.host;
 var context = canvas.getContext("2d");
 var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
+var server_url = 'http://127.0.0.1:5000';
 
 
 function sendJSONXMLHTTPRequest(url, objects, callback) {
     var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
     xhr.onreadystatechange = function () {
         if (xhr.readyState==4) {
             try {
                 if (xhr.status==200) {
-                    //XXX: parse some JSON from the request!
-                    //XXX: Pass the data to the callback!
+                    //Check XXX: parse some JSON from the request!
+                    //Check XXX: Pass the data to the callback!
+                    var resp = JSON.parse(xhr.responseText);
+                    callback(resp);
                 }
             } 
             catch(e) {
@@ -47,9 +51,13 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
             }
         }
     };
-    //XXX: POST to a URL
-    //XXX: set the mimetype and the accept headers!
+    //Check XXX: POST to a URL
+    //Check XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader("Accept", "application/json");
+    obj = JSON.stringify(objects);
+    xhr.send(obj);
 }
 
 
@@ -136,7 +144,11 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
-    drawNextFrame(); // (but should we?)
+    drawNextFrame(); //(but should we?)--no, this might only update the local frame and make it lose sync with the server
+    sendJSONXMLHTTPRequest(server_url+'/entity/'+entity, data, function(x){
+        console.log(x); //this should just be a '200 OK' response
+    });
+
     //XXX: Send a XHTML Request that updates the entity you just  modified!
 
 }

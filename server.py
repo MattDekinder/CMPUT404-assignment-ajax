@@ -23,9 +23,11 @@
 
 import flask
 from flask import Flask, request, redirect, jsonify
+from flask_cors import CORS, cross_origin
 import json
 app = Flask(__name__)
 app.debug = True
+CORS(app)
 
 # An example world
 # {
@@ -78,6 +80,7 @@ def hello():
     return redirect('/static/index.html')
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def update(entity):
     '''update the entities via this interface'''
     myWorld.set(entity, flask_post_json()) #TODO: get the data for this method
